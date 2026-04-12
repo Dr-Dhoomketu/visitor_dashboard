@@ -2,7 +2,6 @@ import { useState } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import scheduleImg from "@assets/image_1776014103293.png";
 
 const schema = z.object({
   name: z.string().min(2, "Name is required"),
@@ -176,12 +175,12 @@ export default function Schedule() {
           </form>
         </div>
 
-        {/* Right — photo */}
+        {/* Right — receptionist photo */}
         <div style={{ width: 220, flexShrink: 0 }}>
           <img
-            src={scheduleImg}
-            alt="Reception"
-            style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "right center" }}
+            src="https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&w=400&q=80"
+            alt="Receptionist at front desk"
+            style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top" }}
           />
         </div>
       </div>

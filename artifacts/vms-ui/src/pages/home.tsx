@@ -1,5 +1,4 @@
 import { Link } from "wouter";
-import homeImg from "@assets/image_1776014062971.png";
 
 function FairTechLogo() {
   return (
@@ -50,8 +49,8 @@ export default function Home() {
           {/* Right — office photo */}
           <div style={{ flexShrink: 0, width: "42%" }}>
             <img
-              src={homeImg}
-              alt="Office team"
+              src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&w=700&q=80"
+              alt="Office team collaborating"
               style={{ width: "100%", borderRadius: 16, objectFit: "cover", maxHeight: 320, display: "block" }}
             />
           </div>
