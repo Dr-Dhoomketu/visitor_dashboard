@@ -1,0 +1,8 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "k-tn9vBGsD5-0KP-Kkw1P"
+uri = "file://VMS_Solution_Report.pdf"
+type = "pdf"
+title = "VMS – Solution Architecture & Tech Stack Report"
