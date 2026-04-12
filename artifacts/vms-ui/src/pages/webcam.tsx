@@ -1,95 +1,106 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
-import { Camera, CheckCircle2, RefreshCw, ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { useToast } from "@/hooks/use-toast";
 
 export default function Webcam() {
   const [, setLocation] = useLocation();
   const [captured, setCaptured] = useState(false);
-  const { toast } = useToast();
-
-  const handleCapture = () => {
-    setCaptured(true);
-    toast({
-      title: "Photo Captured",
-      description: "Visitor photo successfully saved to record.",
-    });
-  };
-
-  const handleProceed = () => {
-    setLocation("/dashboard");
-    toast({
-      title: "Check-In Complete",
-      description: "Visitor has been successfully registered and is pending approval.",
-    });
-  };
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
-      <div>
-        <h2 className="text-2xl font-bold tracking-tight">Capture Photo</h2>
-        <p className="text-muted-foreground">Please capture a clear photo of the visitor for their badge.</p>
+    <div className="min-h-screen flex items-center justify-center gap-10 px-8" style={{ background: "#ddeaf7" }}>
+      {/* Camera card */}
+      <div className="bg-white rounded-xl shadow-md p-8 flex flex-col items-center" style={{ width: 340 }}>
+        <h2 className="text-xl font-bold text-gray-800 mb-6 text-center">Take Your Picture</h2>
+
+        <div className="border-2 border-gray-300 rounded-sm flex items-center justify-center mb-8"
+          style={{ width: 260, height: 190 }}>
+          {captured ? (
+            <div className="flex flex-col items-center gap-2">
+              <svg className="text-green-500" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M8 12l3 3 5-5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              <p className="text-sm font-medium text-green-600">Photo Captured!</p>
+            </div>
+          ) : (
+            <svg className="text-gray-300" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+              <circle cx="12" cy="13" r="4" />
+            </svg>
+          )}
+        </div>
+
+        <div className="flex gap-4">
+          {!captured ? (
+            <button
+              onClick={() => setCaptured(true)}
+              data-testid="btn-capture-photo"
+              className="px-6 py-2 border border-gray-300 rounded-full text-sm text-gray-600 hover:bg-gray-50 transition-colors"
+            >
+              Capture
+            </button>
+          ) : (
+            <>
+              <button
+                onClick={() => setCaptured(false)}
+                data-testid="btn-retake-photo"
+                className="px-6 py-2 border border-gray-300 rounded-full text-sm text-gray-600 hover:bg-gray-50 transition-colors"
+              >
+                Retake
+              </button>
+              <button
+                onClick={() => setLocation("/dashboard")}
+                data-testid="btn-proceed-checkin"
+                className="px-6 py-2 border border-gray-300 rounded-full text-sm text-gray-600 hover:bg-gray-50 transition-colors"
+              >
+                Next
+              </button>
+            </>
+          )}
+        </div>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Camera Preview</CardTitle>
-          <CardDescription>Ensure the visitor's face is clearly visible and well-lit.</CardDescription>
-        </CardHeader>
-        <CardContent className="flex flex-col items-center space-y-8">
-          
-          {/* Fake Webcam View */}
-          <div className="w-full max-w-lg aspect-video bg-muted border-2 border-border border-dashed rounded-xl flex flex-col items-center justify-center relative overflow-hidden">
-            {captured ? (
-              <div className="absolute inset-0 bg-background/80 backdrop-blur-sm flex flex-col items-center justify-center text-center">
-                <CheckCircle2 className="h-16 w-16 text-green-500 mb-4" />
-                <h3 className="text-xl font-medium text-foreground">Photo Captured!</h3>
-              </div>
-            ) : (
-              <>
-                <Camera className="h-12 w-12 text-muted-foreground/50 mb-2" />
-                <span className="text-muted-foreground font-medium">Camera Active</span>
-                <span className="text-xs text-muted-foreground/70">Align face within frame</span>
-              </>
-            )}
+      {/* Visitor Pass card */}
+      <div className="relative rounded-xl shadow-lg overflow-hidden flex-shrink-0" style={{ width: 200 }}>
+        {/* Blue diagonal top */}
+        <div className="relative h-32 flex items-center justify-center overflow-hidden" style={{ background: "linear-gradient(135deg, #1565c0 0%, #42a5f5 100%)" }}>
+          <div className="absolute top-0 right-0 w-28 h-28 rounded-bl-full" style={{ background: "rgba(255,255,255,0.12)" }} />
+          <div className="absolute bottom-0 left-0 w-20 h-20 rounded-tr-full" style={{ background: "rgba(255,255,255,0.08)" }} />
+          <p className="text-white font-bold text-base z-10">Visitor Pass</p>
+        </div>
+
+        <div className="bg-white px-5 pb-6 pt-3">
+          {/* Avatar */}
+          <div className="flex justify-center mb-3 -mt-8">
+            <div className="w-16 h-16 rounded-full border-4 border-white shadow-md bg-blue-100 flex items-center justify-center overflow-hidden">
+              {captured ? (
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2196f3" strokeWidth="1.5">
+                  <circle cx="12" cy="8" r="4" />
+                  <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
+                </svg>
+              ) : (
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#90caf9" strokeWidth="1.5">
+                  <circle cx="12" cy="8" r="4" />
+                  <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
+                </svg>
+              )}
+            </div>
           </div>
 
-          <div className="flex gap-4 w-full max-w-lg">
-            {!captured ? (
-              <Button 
-                onClick={handleCapture} 
-                className="w-full h-12 text-base" 
-                data-testid="btn-capture-photo"
-              >
-                <Camera className="mr-2 h-5 w-5" />
-                Capture Photo
-              </Button>
-            ) : (
-              <>
-                <Button 
-                  variant="outline" 
-                  onClick={() => setCaptured(false)} 
-                  className="flex-1 h-12"
-                  data-testid="btn-retake-photo"
-                >
-                  <RefreshCw className="mr-2 h-4 w-4" />
-                  Retake
-                </Button>
-                <Button 
-                  onClick={handleProceed} 
-                  className="flex-1 h-12"
-                  data-testid="btn-proceed-checkin"
-                >
-                  Proceed
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </>
-            )}
+          <h3 className="text-center font-bold text-blue-700 text-sm mb-3">John Doe</h3>
+
+          <div className="space-y-1.5 text-xs text-gray-600">
+            <p><span className="font-semibold">Email:</span> john@example.com</p>
+            <p><span className="font-semibold">Phone:</span> (123) 456-7890</p>
+            <p><span className="font-semibold">Company:</span> ABC Inc.</p>
+            <p><span className="font-semibold">Address:</span> 123 Main St, City</p>
           </div>
-        </CardContent>
-      </Card>
+
+          <p className="text-center text-blue-500 text-xs font-medium mt-4">VTS infosoft PVT LTD</p>
+        </div>
+
+        {/* Bottom blue stripe */}
+        <div className="h-3" style={{ background: "linear-gradient(90deg, #1565c0, #42a5f5)" }} />
+      </div>
     </div>
   );
 }

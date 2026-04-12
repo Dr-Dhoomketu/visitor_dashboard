@@ -6,7 +6,6 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 import MainLayout from "@/components/layout";
 
-// Page Imports
 import Home from "@/pages/home";
 import Login from "@/pages/login";
 import CheckIn from "@/pages/checkin";
@@ -18,7 +17,6 @@ import PreviousVisits from "@/pages/previous-visits";
 
 const queryClient = new QueryClient();
 
-// Wrapper for pages that need the layout
 const LayoutRoute = ({ component: Component, ...rest }: any) => (
   <Route {...rest}>
     {(params) => (
@@ -32,14 +30,18 @@ const LayoutRoute = ({ component: Component, ...rest }: any) => (
 function Router() {
   return (
     <Switch>
+      {/* Public full-screen pages — no sidebar */}
       <Route path="/" component={Home} />
       <Route path="/login" component={Login} />
-      <LayoutRoute path="/checkin" component={CheckIn} />
-      <LayoutRoute path="/webcam" component={Webcam} />
+      <Route path="/checkin" component={CheckIn} />
+      <Route path="/webcam" component={Webcam} />
+      <Route path="/schedule" component={Schedule} />
+
+      {/* Admin pages — with sidebar */}
       <LayoutRoute path="/dashboard" component={Dashboard} />
       <LayoutRoute path="/approval" component={Approval} />
-      <LayoutRoute path="/schedule" component={Schedule} />
       <LayoutRoute path="/previous-visits" component={PreviousVisits} />
+
       <Route component={NotFound} />
     </Switch>
   );

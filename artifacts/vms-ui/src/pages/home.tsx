@@ -1,91 +1,80 @@
-import { ShieldCheck, UserPlus, History, LogIn, ArrowRight } from "lucide-react";
 import { Link } from "wouter";
-import { Button } from "@/components/ui/button";
+import homeImg from "@assets/image_1776014062971.png";
 
 export default function Home() {
   return (
-    <div className="min-h-screen w-full flex flex-col bg-background relative overflow-hidden">
-      {/* Decorative background elements */}
-      <div className="absolute top-0 left-0 w-full h-[50vh] bg-gradient-to-b from-primary/5 to-transparent pointer-events-none" />
-      <div className="absolute top-[-10%] right-[-5%] w-[40%] h-[40%] rounded-full bg-primary/5 blur-3xl pointer-events-none" />
-      
-      <header className="flex items-center justify-between p-6 md:px-12 relative z-10">
+    <div className="min-h-screen flex flex-col" style={{ background: "#ddeaf7" }}>
+      {/* Top nav */}
+      <header className="flex items-center justify-between px-10 py-4 bg-white/60 backdrop-blur-sm border-b border-blue-100">
         <div className="flex items-center gap-2">
-          <div className="bg-primary p-2 rounded-lg">
-            <ShieldCheck className="h-6 w-6 text-primary-foreground" />
+          <div className="w-8 h-8 rounded bg-blue-600 flex items-center justify-center">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            </svg>
           </div>
-          <span className="font-bold text-xl tracking-tight text-foreground">VMS Secure</span>
+          <span className="text-sm font-semibold text-gray-700">Fair Tech Services</span>
         </div>
-        <Link href="/login" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-          Admin Login
-        </Link>
+        <nav className="flex items-center gap-10">
+          <Link href="/schedule" className="text-sm text-gray-600 hover:text-blue-600 font-medium transition-colors">
+            Have an Appointment
+          </Link>
+          <Link href="/previous-visits" className="text-sm text-gray-600 hover:text-blue-600 font-medium transition-colors">
+            Been Here Before
+          </Link>
+          <Link href="/login" className="text-sm text-gray-600 hover:text-blue-600 font-medium transition-colors">
+            Log in/Check in
+          </Link>
+        </nav>
       </header>
 
-      <main className="flex-1 flex flex-col items-center justify-center px-4 py-12 relative z-10">
-        <div className="max-w-3xl text-center mb-16">
-          <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-foreground mb-6">
-            Enterprise Visitor Management
-          </h1>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            Secure, efficient, and professional visitor tracking for modern facilities. 
-            Streamline your front desk operations and ensure workplace security.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-5xl">
-          <div className="group relative bg-card hover:bg-accent/50 border border-border hover:border-primary/50 transition-all duration-300 rounded-2xl p-8 flex flex-col shadow-sm hover:shadow-md">
-            <div className="h-12 w-12 bg-primary/10 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-              <LogIn className="h-6 w-6 text-primary" />
-            </div>
-            <h3 className="text-xl font-semibold mb-3">Log In / Check-In</h3>
-            <p className="text-muted-foreground text-sm flex-1 mb-8">
-              Arriving visitors can quickly register their details and print a badge.
+      {/* Hero */}
+      <main className="flex-1 flex items-center">
+        <div className="w-full max-w-6xl mx-auto px-10 py-16 flex items-center justify-between gap-12">
+          {/* Left text */}
+          <div className="flex-1 max-w-xl">
+            <p className="text-xs font-medium text-blue-500 uppercase tracking-widest mb-3">Visitor Pass</p>
+            <h1 className="text-5xl font-bold text-gray-900 leading-tight mb-5">
+              Visitor Pass<br />Management System.
+            </h1>
+            <p className="text-sm text-gray-500 mb-10">
+              Welcome, Please tap on button to check-in
             </p>
-            <Link href="/checkin">
-              <Button className="w-full group/btn" data-testid="btn-home-checkin">
-                Check In Now
-                <ArrowRight className="ml-2 h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
-              </Button>
-            </Link>
+            <div className="flex flex-wrap gap-4">
+              <Link
+                href="/checkin"
+                data-testid="btn-home-checkin"
+                className="px-7 py-3 bg-blue-600 text-white text-sm font-semibold rounded-md hover:bg-blue-700 transition-colors shadow-sm"
+              >
+                Log In / Check-In
+              </Link>
+              <Link
+                href="/schedule"
+                data-testid="btn-home-schedule"
+                className="px-7 py-3 bg-white text-blue-600 text-sm font-semibold rounded-md border border-blue-200 hover:bg-blue-50 transition-colors"
+              >
+                Schedule Appointment
+              </Link>
+              <Link
+                href="/previous-visits"
+                data-testid="btn-home-history"
+                className="px-7 py-3 bg-white text-gray-600 text-sm font-semibold rounded-md border border-gray-200 hover:bg-gray-50 transition-colors"
+              >
+                Previous Visits
+              </Link>
+            </div>
           </div>
 
-          <div className="group relative bg-card hover:bg-accent/50 border border-border hover:border-primary/50 transition-all duration-300 rounded-2xl p-8 flex flex-col shadow-sm hover:shadow-md">
-            <div className="h-12 w-12 bg-primary/10 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-              <UserPlus className="h-6 w-6 text-primary" />
-            </div>
-            <h3 className="text-xl font-semibold mb-3">Schedule Appointment</h3>
-            <p className="text-muted-foreground text-sm flex-1 mb-8">
-              Pre-register a visitor to speed up their arrival process and notify security.
-            </p>
-            <Link href="/schedule">
-              <Button variant="outline" className="w-full group/btn" data-testid="btn-home-schedule">
-                Schedule Visit
-                <ArrowRight className="ml-2 h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
-              </Button>
-            </Link>
-          </div>
-
-          <div className="group relative bg-card hover:bg-accent/50 border border-border hover:border-primary/50 transition-all duration-300 rounded-2xl p-8 flex flex-col shadow-sm hover:shadow-md">
-            <div className="h-12 w-12 bg-primary/10 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-              <History className="h-6 w-6 text-primary" />
-            </div>
-            <h3 className="text-xl font-semibold mb-3">Previous Visits</h3>
-            <p className="text-muted-foreground text-sm flex-1 mb-8">
-              Returning visitors can look up past details for an expedited sign-in.
-            </p>
-            <Link href="/previous-visits">
-              <Button variant="outline" className="w-full group/btn" data-testid="btn-home-history">
-                View History
-                <ArrowRight className="ml-2 h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
-              </Button>
-            </Link>
+          {/* Right image */}
+          <div className="flex-shrink-0 w-[42%]">
+            <img
+              src={homeImg}
+              alt="Office team"
+              className="w-full rounded-2xl object-cover shadow-lg"
+              style={{ maxHeight: 340 }}
+            />
           </div>
         </div>
       </main>
-
-      <footer className="py-6 text-center text-sm text-muted-foreground border-t border-border mt-auto relative z-10 bg-background/50 backdrop-blur">
-        &copy; {new Date().getFullYear()} VMS Secure. All rights reserved.
-      </footer>
     </div>
   );
 }

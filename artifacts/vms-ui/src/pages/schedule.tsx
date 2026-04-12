@@ -2,233 +2,168 @@ import { useState } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CalendarIcon } from "lucide-react";
-import { format } from "date-fns";
-import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
-import { useToast } from "@/hooks/use-toast";
+import scheduleImg from "@assets/image_1776014103293.png";
 
-const scheduleSchema = z.object({
+const schema = z.object({
   name: z.string().min(2, "Name is required"),
-  email: z.string().email("Invalid email address"),
-  phone: z.string().min(10, "Valid phone number required"),
-  purpose: z.string().min(1, "Please select a purpose"),
-  meetWith: z.string().min(1, "Please select host"),
-  date: z.date({ required_error: "A date is required" }),
-  message: z.string().optional(),
+  email: z.string().email("Valid email required"),
+  gender: z.string().min(1, "Select gender"),
+  phone: z.string().min(10, "Valid phone required"),
+  date: z.string().min(1, "Date required"),
+  fromTime: z.string().optional(),
+  toTime: z.string().optional(),
+  duration: z.string().optional(),
+  status: z.string().optional(),
+  purpose: z.string().optional(),
+  address: z.string().optional(),
+  meetWith: z.string().min(1, "Select employee"),
 });
 
-export default function Schedule() {
-  const { toast } = useToast();
-  const [isSubmitting, setIsSubmitting] = useState(false);
+type FormData = z.infer<typeof schema>;
 
-  const form = useForm<z.infer<typeof scheduleSchema>>({
-    resolver: zodResolver(scheduleSchema),
-    defaultValues: {
-      name: "",
-      email: "",
-      phone: "",
-      purpose: "",
-      meetWith: "",
-      message: "",
-    },
+function FieldLabel({ children }: { children: React.ReactNode }) {
+  return <label className="block text-xs text-gray-500 mb-1 font-medium">{children}</label>;
+}
+
+function FieldError({ message }: { message?: string }) {
+  return message ? <p className="text-xs text-red-500 mt-1">{message}</p> : null;
+}
+
+export default function Schedule() {
+  const [submitted, setSubmitted] = useState(false);
+  const { register, handleSubmit, formState: { errors }, reset } = useForm<FormData>({
+    resolver: zodResolver(schema),
+    defaultValues: { name: "", email: "", gender: "", phone: "", date: "", meetWith: "" },
   });
 
-  function onSubmit(values: z.infer<typeof scheduleSchema>) {
-    setIsSubmitting(true);
-    // Simulate API call
-    setTimeout(() => {
-      setIsSubmitting(false);
-      toast({
-        title: "Appointment Scheduled",
-        description: `Pre-registration for ${values.name} on ${format(values.date, 'MMM do, yyyy')} was successful.`,
-      });
-      form.reset();
-    }, 800);
+  function onSubmit() {
+    setSubmitted(true);
+    setTimeout(() => { setSubmitted(false); reset(); }, 3000);
   }
 
+  const inputCls = "w-full bg-gray-100 border border-gray-200 rounded-md px-3 py-2 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:border-blue-400 focus:bg-white transition-colors";
+  const selectCls = inputCls + " appearance-none cursor-pointer";
+
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-bold tracking-tight">Schedule Appointment</h2>
-        <p className="text-muted-foreground">Pre-register a visitor to speed up their check-in process upon arrival.</p>
+    <div className="min-h-screen px-4 py-6" style={{ background: "#ddeaf7" }}>
+      <div className="max-w-5xl mx-auto bg-white rounded-2xl shadow-md overflow-hidden flex">
+        {/* Form side */}
+        <div className="flex-1 p-8">
+          {/* Logo */}
+          <div className="flex items-center gap-2 mb-5">
+            <div className="w-8 h-8 rounded bg-blue-600 flex items-center justify-center">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+              </svg>
+            </div>
+            <div>
+              <p className="text-xs font-bold text-gray-700 leading-none">Visitor Management System</p>
+            </div>
+          </div>
+
+          <h2 className="text-lg font-bold text-gray-800 mb-5">Have an Appointement</h2>
+
+          {submitted && (
+            <div className="mb-4 px-4 py-3 bg-green-50 border border-green-200 rounded-lg text-sm text-green-700 font-medium">
+              Appointment booked successfully! A confirmation will be sent to your email.
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="grid grid-cols-2 gap-x-6 gap-y-3">
+              <div>
+                <FieldLabel>Name</FieldLabel>
+                <input {...register("name")} placeholder="Name" className={inputCls} />
+                <FieldError message={errors.name?.message} />
+              </div>
+              <div>
+                <FieldLabel>Select Employee</FieldLabel>
+                <select {...register("meetWith")} className={selectCls}>
+                  <option value="">--- Select ---</option>
+                  <option value="Alice Johnson">Alice Johnson (HR)</option>
+                  <option value="Bob Smith">Bob Smith (Engineering)</option>
+                  <option value="Carol White">Carol White (Management)</option>
+                  <option value="Reception">Reception</option>
+                </select>
+                <FieldError message={errors.meetWith?.message} />
+              </div>
+              <div>
+                <FieldLabel>E-mail</FieldLabel>
+                <input {...register("email")} type="email" placeholder="E-mail" className={inputCls} />
+                <FieldError message={errors.email?.message} />
+              </div>
+              <div>
+                <FieldLabel>Phone No.</FieldLabel>
+                <input {...register("phone")} placeholder="Phone No." className={inputCls} />
+                <FieldError message={errors.phone?.message} />
+              </div>
+              <div>
+                <FieldLabel>Gender</FieldLabel>
+                <select {...register("gender")} className={selectCls}>
+                  <option value="">--Select--</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                </select>
+                <FieldError message={errors.gender?.message} />
+              </div>
+              <div>
+                <FieldLabel>Date</FieldLabel>
+                <input {...register("date")} type="date" placeholder="Date" className={inputCls} />
+                <FieldError message={errors.date?.message} />
+              </div>
+              <div>
+                <FieldLabel>From Time</FieldLabel>
+                <input {...register("fromTime")} type="time" className={inputCls} />
+              </div>
+              <div>
+                <FieldLabel>To Time</FieldLabel>
+                <input {...register("toTime")} type="time" className={inputCls} />
+              </div>
+              <div>
+                <FieldLabel>Duration</FieldLabel>
+                <input {...register("duration")} placeholder="Hours" className={inputCls} />
+              </div>
+              <div>
+                <FieldLabel>Status</FieldLabel>
+                <select {...register("status")} className={selectCls}>
+                  <option value="">--Select--</option>
+                  <option value="Confirmed">Confirmed</option>
+                  <option value="Tentative">Tentative</option>
+                </select>
+              </div>
+              <div>
+                <FieldLabel>Purpose</FieldLabel>
+                <input {...register("purpose")} placeholder="Purpose" className={inputCls} />
+              </div>
+              <div>
+                <FieldLabel>Address</FieldLabel>
+                <input {...register("address")} placeholder="Address" className={inputCls} />
+              </div>
+            </div>
+
+            <div className="mt-6">
+              <button
+                type="submit"
+                data-testid="btn-schedule-submit"
+                className="px-8 py-2.5 bg-blue-500 text-white text-sm font-semibold rounded-md hover:bg-blue-600 transition-colors"
+              >
+                SUBMIT
+              </button>
+            </div>
+          </form>
+        </div>
+
+        {/* Image side */}
+        <div className="w-64 flex-shrink-0">
+          <img
+            src={scheduleImg}
+            alt="Reception"
+            className="w-full h-full object-cover"
+            style={{ minHeight: 420 }}
+          />
+        </div>
       </div>
-
-      <Card className="max-w-2xl">
-        <CardHeader>
-          <CardTitle>Appointment Details</CardTitle>
-          <CardDescription>An invitation email will be sent to the visitor with a pre-registration QR code.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Visitor Full Name</FormLabel>
-                      <FormControl>
-                        <Input placeholder="John Doe" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Visitor Email</FormLabel>
-                      <FormControl>
-                        <Input type="email" placeholder="john@example.com" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="phone"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Visitor Phone</FormLabel>
-                      <FormControl>
-                        <Input placeholder="555-0100" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="date"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col pt-2">
-                      <FormLabel className="mb-1">Preferred Date</FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant={"outline"}
-                              className={`w-full pl-3 text-left font-normal ${!field.value && "text-muted-foreground"}`}
-                            >
-                              {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
-                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar
-                            mode="single"
-                            selected={field.value}
-                            onSelect={field.onChange}
-                            disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
-                            initialFocus
-                          />
-                        </PopoverContent>
-                      </Popover>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="purpose"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Purpose of Visit</FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select purpose" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="Meeting">Meeting</SelectItem>
-                          <SelectItem value="Interview">Interview</SelectItem>
-                          <SelectItem value="Delivery">Delivery</SelectItem>
-                          <SelectItem value="Vendor">Vendor/Contractor</SelectItem>
-                          <SelectItem value="Other">Other</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="meetWith"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Host Employee</FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select host" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="Alice Johnson">Alice Johnson (HR)</SelectItem>
-                          <SelectItem value="Bob Smith">Bob Smith (Engineering)</SelectItem>
-                          <SelectItem value="Carol White">Carol White (Management)</SelectItem>
-                          <SelectItem value="Reception">Reception</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              
-              <FormField
-                control={form.control}
-                name="message"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Additional Notes/Message (Optional)</FormLabel>
-                    <FormControl>
-                      <Textarea 
-                        placeholder="Any special instructions for security or reception..." 
-                        className="resize-none" 
-                        {...field} 
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <div className="flex justify-end pt-4">
-                <Button type="submit" disabled={isSubmitting} data-testid="btn-schedule-submit">
-                  {isSubmitting ? "Scheduling..." : "Schedule Appointment"}
-                </Button>
-              </div>
-            </form>
-          </Form>
-        </CardContent>
-      </Card>
     </div>
   );
 }

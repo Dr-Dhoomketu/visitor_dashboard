@@ -1,211 +1,133 @@
 import { Users, UserCheck, UserMinus, CalendarCheck, Activity } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-  Legend
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  PieChart, Pie, Cell, Legend
 } from "recharts";
 import { useVisitors } from "@/hooks/use-visitors";
-import { Badge } from "@/components/ui/badge";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 
 const barData = [
-  { name: 'Mon', visitors: 42 },
-  { name: 'Tue', visitors: 58 },
-  { name: 'Wed', visitors: 35 },
-  { name: 'Thu', visitors: 61 },
-  { name: 'Fri', visitors: 70 },
-  { name: 'Sat', visitors: 15 },
-  { name: 'Sun', visitors: 8 },
+  { name: "Mon", visitors: 42 }, { name: "Tue", visitors: 58 },
+  { name: "Wed", visitors: 35 }, { name: "Thu", visitors: 61 },
+  { name: "Fri", visitors: 70 }, { name: "Sat", visitors: 15 },
+  { name: "Sun", visitors: 8 },
 ];
 
 const pieData = [
-  { name: 'Meeting', value: 45 },
-  { name: 'Interview', value: 25 },
-  { name: 'Delivery', value: 15 },
-  { name: 'Personal', value: 10 },
-  { name: 'Other', value: 5 },
+  { name: "Meeting", value: 45 }, { name: "Interview", value: 25 },
+  { name: "Delivery", value: 15 }, { name: "Personal", value: 10 }, { name: "Other", value: 5 },
 ];
 
-const COLORS = ['hsl(var(--chart-1))', 'hsl(var(--chart-2))', 'hsl(var(--chart-3))', 'hsl(var(--chart-4))', 'hsl(var(--chart-5))'];
+const PIE_COLORS = ["#2196f3", "#4caf50", "#ff9800", "#9c27b0", "#f44336"];
+
+function StatCard({ label, value, note, icon: Icon, color }: { label: string; value: number | string; note: string; icon: any; color: string }) {
+  return (
+    <div className="bg-white rounded-xl px-5 py-4 shadow-sm border border-gray-100">
+      <div className="flex items-center justify-between mb-2">
+        <p className="text-xs font-medium text-gray-500">{label}</p>
+        <div className="p-1.5 rounded-lg" style={{ background: color + "15" }}>
+          <Icon className="h-4 w-4" style={{ color }} />
+        </div>
+      </div>
+      <p className="text-2xl font-bold text-gray-800">{value}</p>
+      <p className="text-xs text-gray-400 mt-1">{note}</p>
+    </div>
+  );
+}
 
 export default function Dashboard() {
   const { visitors } = useVisitors();
-  
-  const todayVisitors = visitors.filter(v => v.date === new Date().toISOString().split('T')[0]).length;
   const approvedVisitors = visitors.filter(v => v.status === "Approved");
 
+  const statusColor: Record<string, string> = {
+    Approved: "#16a34a", Pending: "#d97706", Rejected: "#dc2626",
+  };
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <div>
-        <h2 className="text-2xl font-bold tracking-tight">Security Dashboard</h2>
-        <p className="text-muted-foreground">Overview of today's visitor traffic and facility activity.</p>
+        <h2 className="text-base font-bold text-gray-700">Security Dashboard</h2>
+        <p className="text-xs text-gray-400 mt-0.5">Overview of today's visitor traffic and facility activity.</p>
       </div>
 
-      {/* Metrics Row */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Visitors</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{visitors.length}</div>
-            <p className="text-xs text-muted-foreground">+12% from last week</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Today's Visitors</CardTitle>
-            <Activity className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{todayVisitors || 24}</div>
-            <p className="text-xs text-muted-foreground">+4 since last hour</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Check-In</CardTitle>
-            <UserCheck className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">18</div>
-            <p className="text-xs text-muted-foreground">Currently on premise</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Check-Out</CardTitle>
-            <UserMinus className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">6</div>
-            <p className="text-xs text-muted-foreground">Departed today</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Appointments</CardTitle>
-            <CalendarCheck className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">12</div>
-            <p className="text-xs text-muted-foreground">Pre-registered</p>
-          </CardContent>
-        </Card>
+      {/* Stats */}
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <StatCard label="Total Visitors" value={visitors.length} note="+12% from last week" icon={Users} color="#2196f3" />
+        <StatCard label="Today's Visitors" value={24} note="+4 since last hour" icon={Activity} color="#9c27b0" />
+        <StatCard label="Total Check-In" value={18} note="Currently on premise" icon={UserCheck} color="#4caf50" />
+        <StatCard label="Total Check-Out" value={6} note="Departed today" icon={UserMinus} color="#f44336" />
+        <StatCard label="Appointments" value={12} note="Pre-registered" icon={CalendarCheck} color="#ff9800" />
       </div>
 
-      {/* Charts Row */}
-      <div className="grid gap-4 md:grid-cols-2">
-        <Card className="col-span-1">
-          <CardHeader>
-            <CardTitle>Visitor Traffic (Last 7 Days)</CardTitle>
-          </CardHeader>
-          <CardContent className="h-[300px]">
+      {/* Charts */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
+          <p className="text-sm font-semibold text-gray-700 mb-4">Visitor Traffic (Last 7 Days)</p>
+          <div className="h-52">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={barData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
-                <XAxis dataKey="name" axisLine={false} tickLine={false} fontSize={12} tickMargin={10} />
-                <YAxis axisLine={false} tickLine={false} fontSize={12} />
-                <Tooltip 
-                  contentStyle={{ borderRadius: '8px', border: '1px solid hsl(var(--border))', backgroundColor: 'hsl(var(--card))' }} 
-                  cursor={{ fill: 'hsl(var(--muted))' }}
+              <BarChart data={barData} margin={{ top: 4, right: 4, left: -24, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                <XAxis dataKey="name" axisLine={false} tickLine={false} fontSize={11} tick={{ fill: "#9ca3af" }} />
+                <YAxis axisLine={false} tickLine={false} fontSize={11} tick={{ fill: "#9ca3af" }} />
+                <Tooltip
+                  contentStyle={{ borderRadius: "8px", border: "1px solid #e5e7eb", fontSize: "12px" }}
+                  cursor={{ fill: "#f0f4ff" }}
                 />
-                <Bar dataKey="visitors" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="visitors" fill="#2196f3" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
-          </CardContent>
-        </Card>
-        <Card className="col-span-1">
-          <CardHeader>
-            <CardTitle>Visit Purposes Breakdown</CardTitle>
-          </CardHeader>
-          <CardContent className="h-[300px]">
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
+          <p className="text-sm font-semibold text-gray-700 mb-4">Visit Purposes Breakdown</p>
+          <div className="h-52">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
-                <Pie
-                  data={pieData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={60}
-                  outerRadius={100}
-                  fill="#8884d8"
-                  paddingAngle={5}
-                  dataKey="value"
-                >
-                  {pieData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
+                <Pie data={pieData} cx="50%" cy="50%" innerRadius={50} outerRadius={80} paddingAngle={3} dataKey="value">
+                  {pieData.map((_, i) => <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />)}
                 </Pie>
-                <Tooltip 
-                  contentStyle={{ borderRadius: '8px', border: '1px solid hsl(var(--border))', backgroundColor: 'hsl(var(--card))' }}
-                />
-                <Legend iconType="circle" wrapperStyle={{ fontSize: '12px' }} />
+                <Tooltip contentStyle={{ borderRadius: "8px", border: "1px solid #e5e7eb", fontSize: "12px" }} />
+                <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: "11px" }} />
               </PieChart>
             </ResponsiveContainer>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
 
-      {/* Recent Approved Activity Table */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Recent Approved Visitors</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Visitor ID</TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Host</TableHead>
-                <TableHead>Purpose</TableHead>
-                <TableHead>Time</TableHead>
-                <TableHead>Status</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {approvedVisitors.slice(0, 5).map((visitor) => (
-                <TableRow key={visitor.id}>
-                  <TableCell className="font-medium">{visitor.id}</TableCell>
-                  <TableCell>{visitor.name}</TableCell>
-                  <TableCell>{visitor.meetWith}</TableCell>
-                  <TableCell>{visitor.purpose}</TableCell>
-                  <TableCell>{visitor.time}</TableCell>
-                  <TableCell>
-                    <Badge variant="default" className="bg-green-500 hover:bg-green-600">
-                      Approved
-                    </Badge>
-                  </TableCell>
-                </TableRow>
+      {/* Recent approved visitors */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="px-5 py-4 border-b border-gray-100">
+          <p className="text-sm font-semibold text-gray-700">Recent Approved Visitors</p>
+        </div>
+        <table className="w-full text-xs">
+          <thead>
+            <tr className="border-b border-gray-100">
+              {["Visitor ID", "Name", "Host", "Purpose", "Time", "Status"].map(h => (
+                <th key={h} className="px-5 py-3 text-left font-semibold text-gray-400 uppercase tracking-wider text-[10px]">{h}</th>
               ))}
-              {approvedVisitors.length === 0 && (
-                <TableRow>
-                  <TableCell colSpan={6} className="text-center py-6 text-muted-foreground">
-                    No recent approved visitors.
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+            </tr>
+          </thead>
+          <tbody>
+            {approvedVisitors.slice(0, 5).map((v) => (
+              <tr key={v.id} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
+                <td className="px-5 py-3 font-semibold text-blue-600">{v.id}</td>
+                <td className="px-5 py-3 text-gray-700">{v.name}</td>
+                <td className="px-5 py-3 text-gray-500">{v.meetWith}</td>
+                <td className="px-5 py-3 text-gray-500">{v.purpose}</td>
+                <td className="px-5 py-3 text-gray-500">{v.time}</td>
+                <td className="px-5 py-3">
+                  <span className="px-2.5 py-1 rounded-full text-[10px] font-semibold" style={{ background: "#dcfce7", color: "#16a34a" }}>
+                    Approved
+                  </span>
+                </td>
+              </tr>
+            ))}
+            {approvedVisitors.length === 0 && (
+              <tr><td colSpan={6} className="text-center py-8 text-gray-400">No approved visitors yet.</td></tr>
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

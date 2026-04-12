@@ -1,99 +1,90 @@
 import { useState } from "react";
-import { Search } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { useVisitors } from "@/hooks/use-visitors";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 
 export default function PreviousVisits() {
   const { visitors } = useVisitors();
-  const [searchTerm, setSearchTerm] = useState("");
+  const [search, setSearch] = useState("");
 
-  const filteredVisits = visitors.filter(visitor => 
-    visitor.phone.includes(searchTerm) || 
-    visitor.name.toLowerCase().includes(searchTerm.toLowerCase())
+  const filtered = visitors.filter(v =>
+    v.phone.includes(search) || v.name.toLowerCase().includes(search.toLowerCase())
   );
 
+  function StatusBadge({ status }: { status: string }) {
+    const styles: Record<string, { bg: string; text: string }> = {
+      Pending:  { bg: "#fef3c7", text: "#d97706" },
+      Approved: { bg: "#dcfce7", text: "#16a34a" },
+      Rejected: { bg: "#fee2e2", text: "#dc2626" },
+    };
+    const s = styles[status] || { bg: "#f3f4f6", text: "#6b7280" };
+    return (
+      <span className="px-2.5 py-1 rounded-full text-[10px] font-semibold" style={{ background: s.bg, color: s.text }}>
+        {status}
+      </span>
+    );
+  }
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <div>
-        <h2 className="text-2xl font-bold tracking-tight">Visit History</h2>
-        <p className="text-muted-foreground">Search and view records of past visitors.</p>
+        <h2 className="text-base font-bold text-gray-700">Been Here Before</h2>
+        <p className="text-xs text-gray-400 mt-0.5">Look up returning visitor records by mobile number or name.</p>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Search Records</CardTitle>
-          <CardDescription>Find past visits by name or mobile number</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="relative max-w-md mb-6">
-            <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search by name or phone (e.g. 555-0101)"
-              className="pl-9"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              data-testid="input-search-history"
-            />
-          </div>
+      {/* Search card */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 px-5 py-4">
+        <p className="text-sm font-semibold text-gray-700 mb-3">Search Records</p>
+        <div className="relative max-w-sm">
+          <svg className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" strokeLinecap="round" />
+          </svg>
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search by mobile number or name..."
+            data-testid="input-search-history"
+            className="w-full pl-9 pr-4 py-2.5 bg-gray-100 border border-gray-200 rounded-md text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:border-blue-400 focus:bg-white transition-colors"
+          />
+        </div>
+      </div>
 
-          <div className="rounded-md border">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Date & Time</TableHead>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Phone</TableHead>
-                  <TableHead>Host</TableHead>
-                  <TableHead>Purpose</TableHead>
-                  <TableHead>Status</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredVisits.length > 0 ? (
-                  filteredVisits.map((visit) => (
-                    <TableRow key={visit.id}>
-                      <TableCell className="font-medium">
-                        {visit.date} <span className="text-muted-foreground text-xs ml-1">{visit.time}</span>
-                      </TableCell>
-                      <TableCell>{visit.name}</TableCell>
-                      <TableCell className="text-muted-foreground">{visit.phone}</TableCell>
-                      <TableCell>{visit.meetWith}</TableCell>
-                      <TableCell>{visit.purpose}</TableCell>
-                      <TableCell>
-                        {visit.status === "Pending" && (
-                          <Badge variant="outline" className="bg-yellow-500/10 text-yellow-600 border-yellow-500/20">Pending</Badge>
-                        )}
-                        {visit.status === "Approved" && (
-                          <Badge variant="outline" className="bg-green-500/10 text-green-600 border-green-500/20">Approved</Badge>
-                        )}
-                        {visit.status === "Rejected" && (
-                          <Badge variant="outline" className="bg-red-500/10 text-red-600 border-red-500/20">Rejected</Badge>
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell colSpan={6} className="h-24 text-center text-muted-foreground">
-                      No matching records found.
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Table */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="px-5 py-4 border-b border-gray-100">
+          <p className="text-sm font-semibold text-gray-700">Visit History</p>
+        </div>
+        <table className="w-full text-xs">
+          <thead>
+            <tr className="border-b border-gray-100">
+              {["Date & Time", "Name", "Phone", "Host", "Purpose", "Status"].map(h => (
+                <th key={h} className="px-5 py-3 text-left font-semibold text-gray-400 uppercase tracking-wider text-[10px]">{h}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {filtered.length > 0 ? (
+              filtered.map((v) => (
+                <tr key={v.id} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
+                  <td className="px-5 py-3">
+                    <span className="font-medium text-gray-700">{v.date}</span>
+                    <span className="text-gray-400 ml-1.5">{v.time}</span>
+                  </td>
+                  <td className="px-5 py-3 font-medium text-gray-700">{v.name}</td>
+                  <td className="px-5 py-3 text-gray-500">{v.phone}</td>
+                  <td className="px-5 py-3 text-gray-500">{v.meetWith}</td>
+                  <td className="px-5 py-3 text-gray-500">{v.purpose}</td>
+                  <td className="px-5 py-3"><StatusBadge status={v.status} /></td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={6} className="text-center py-10 text-gray-400">
+                  {search ? "No records match your search." : "No visit records found."}
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

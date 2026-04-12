@@ -1,16 +1,4 @@
 import { useVisitors } from "@/hooks/use-visitors";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Check, X, Clock, CheckCircle2, XCircle } from "lucide-react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 
 export default function Approval() {
   const { visitors, approveVisitor, rejectVisitor } = useVisitors();
@@ -19,118 +7,97 @@ export default function Approval() {
   const approvedCount = visitors.filter(v => v.status === "Approved").length;
   const rejectedCount = visitors.filter(v => v.status === "Rejected").length;
 
+  function StatusBadge({ status }: { status: string }) {
+    const styles: Record<string, { bg: string; text: string }> = {
+      Pending:  { bg: "#fef3c7", text: "#d97706" },
+      Approved: { bg: "#dcfce7", text: "#16a34a" },
+      Rejected: { bg: "#fee2e2", text: "#dc2626" },
+    };
+    const s = styles[status] || { bg: "#f3f4f6", text: "#6b7280" };
+    return (
+      <span className="px-2.5 py-1 rounded-full text-[10px] font-semibold" style={{ background: s.bg, color: s.text }}>
+        {status}
+      </span>
+    );
+  }
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <div>
-        <h2 className="text-2xl font-bold tracking-tight">Access Approvals</h2>
-        <p className="text-muted-foreground">Review and manage visitor entry requests.</p>
+        <h2 className="text-base font-bold text-gray-700">Access Approvals</h2>
+        <p className="text-xs text-gray-400 mt-0.5">Review and manage visitor entry requests.</p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Pending Requests</CardTitle>
-            <Clock className="h-4 w-4 text-yellow-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{pendingCount}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Approved Today</CardTitle>
-            <CheckCircle2 className="h-4 w-4 text-green-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{approvedCount}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Rejected Today</CardTitle>
-            <XCircle className="h-4 w-4 text-red-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{rejectedCount}</div>
-          </CardContent>
-        </Card>
+      {/* Stat cards */}
+      <div className="grid grid-cols-3 gap-4">
+        {[
+          { label: "Pending", count: pendingCount, bg: "#fef3c7", text: "#d97706", icon: "⏳" },
+          { label: "Approved", count: approvedCount, bg: "#dcfce7", text: "#16a34a", icon: "✓" },
+          { label: "Rejected", count: rejectedCount, bg: "#fee2e2", text: "#dc2626", icon: "✕" },
+        ].map(({ label, count, bg, text, icon }) => (
+          <div key={label} className="bg-white rounded-xl px-5 py-4 shadow-sm border border-gray-100 flex items-center justify-between">
+            <div>
+              <p className="text-xs font-medium text-gray-500">{label} Requests</p>
+              <p className="text-3xl font-bold text-gray-800 mt-1">{count}</p>
+            </div>
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center text-lg font-bold" style={{ background: bg, color: text }}>
+              {icon}
+            </div>
+          </div>
+        ))}
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Visitor Requests</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Visitor Details</TableHead>
-                <TableHead>Purpose</TableHead>
-                <TableHead>Host</TableHead>
-                <TableHead>Time</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {visitors.map((visitor) => (
-                <TableRow key={visitor.id}>
-                  <TableCell>
-                    <div className="font-medium">{visitor.name}</div>
-                    <div className="text-xs text-muted-foreground">{visitor.id}</div>
-                  </TableCell>
-                  <TableCell>{visitor.purpose}</TableCell>
-                  <TableCell>{visitor.meetWith}</TableCell>
-                  <TableCell>{visitor.time}</TableCell>
-                  <TableCell>
-                    {visitor.status === "Pending" && (
-                      <Badge variant="outline" className="bg-yellow-500/10 text-yellow-600 border-yellow-500/20">
-                        Pending
-                      </Badge>
-                    )}
-                    {visitor.status === "Approved" && (
-                      <Badge variant="outline" className="bg-green-500/10 text-green-600 border-green-500/20">
-                        Approved
-                      </Badge>
-                    )}
-                    {visitor.status === "Rejected" && (
-                      <Badge variant="outline" className="bg-red-500/10 text-red-600 border-red-500/20">
-                        Rejected
-                      </Badge>
-                    )}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-2">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="bg-green-50 hover:bg-green-100 hover:text-green-700 text-green-600 border-green-200 dark:bg-green-950 dark:hover:bg-green-900 dark:text-green-400 dark:border-green-900"
-                        disabled={visitor.status !== "Pending"}
-                        onClick={() => approveVisitor(visitor.id)}
-                        data-testid={`btn-approve-${visitor.id}`}
-                      >
-                        <Check className="h-4 w-4 mr-1" />
-                        Approve
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="bg-red-50 hover:bg-red-100 hover:text-red-700 text-red-600 border-red-200 dark:bg-red-950 dark:hover:bg-red-900 dark:text-red-400 dark:border-red-900"
-                        disabled={visitor.status !== "Pending"}
-                        onClick={() => rejectVisitor(visitor.id)}
-                        data-testid={`btn-reject-${visitor.id}`}
-                      >
-                        <X className="h-4 w-4 mr-1" />
-                        Reject
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
+      {/* Table */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="px-5 py-4 border-b border-gray-100">
+          <p className="text-sm font-semibold text-gray-700">Visitor Requests</p>
+        </div>
+        <table className="w-full text-xs">
+          <thead>
+            <tr className="border-b border-gray-100">
+              {["Visitor Details", "Purpose", "Host", "Time", "Status", "Actions"].map(h => (
+                <th key={h} className="px-5 py-3 text-left font-semibold text-gray-400 uppercase tracking-wider text-[10px]">{h}</th>
               ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+            </tr>
+          </thead>
+          <tbody>
+            {visitors.map((visitor) => (
+              <tr key={visitor.id} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
+                <td className="px-5 py-3">
+                  <p className="font-semibold text-gray-700">{visitor.name}</p>
+                  <p className="text-gray-400 text-[10px] mt-0.5">{visitor.id}</p>
+                </td>
+                <td className="px-5 py-3 text-gray-500">{visitor.purpose}</td>
+                <td className="px-5 py-3 text-gray-500">{visitor.meetWith}</td>
+                <td className="px-5 py-3 text-gray-500">{visitor.time}</td>
+                <td className="px-5 py-3"><StatusBadge status={visitor.status} /></td>
+                <td className="px-5 py-3">
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => approveVisitor(visitor.id)}
+                      disabled={visitor.status !== "Pending"}
+                      data-testid={`btn-approve-${visitor.id}`}
+                      className="px-3 py-1.5 rounded-md text-[10px] font-semibold border transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                      style={visitor.status === "Pending" ? { background: "#f0fdf4", color: "#16a34a", borderColor: "#bbf7d0" } : { background: "#f9fafb", color: "#9ca3af", borderColor: "#e5e7eb" }}
+                    >
+                      Approve
+                    </button>
+                    <button
+                      onClick={() => rejectVisitor(visitor.id)}
+                      disabled={visitor.status !== "Pending"}
+                      data-testid={`btn-reject-${visitor.id}`}
+                      className="px-3 py-1.5 rounded-md text-[10px] font-semibold border transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                      style={visitor.status === "Pending" ? { background: "#fff1f2", color: "#dc2626", borderColor: "#fecaca" } : { background: "#f9fafb", color: "#9ca3af", borderColor: "#e5e7eb" }}
+                    >
+                      Reject
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
