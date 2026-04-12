@@ -60,15 +60,15 @@ export default function MainLayout({ children }: MainLayoutProps) {
       {/* Sidebar */}
       <aside className="w-56 bg-white border-r border-gray-100 flex-shrink-0 hidden md:flex flex-col shadow-sm">
         {/* Brand */}
-        <div className="flex items-center gap-2 px-5 py-5 border-b border-gray-100">
-          <div className="w-7 h-7 rounded bg-blue-600 flex items-center justify-center flex-shrink-0">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-            </svg>
-          </div>
+        <div className="flex items-center gap-2 px-4 py-4 border-b border-gray-100">
+          <svg viewBox="0 0 60 52" width="28" height="24" style={{ flexShrink: 0 }}>
+            <polygon points="30,2 58,50 2,50" fill="#2d6be4" />
+            <polygon points="30,14 46,50 14,50" fill="#5b8cf5" />
+            <polygon points="30,26 40,50 20,50" fill="#8db4fa" />
+          </svg>
           <div>
-            <p className="text-xs font-bold text-gray-800 leading-none">VMS</p>
-            <p className="text-[10px] text-gray-400 mt-0.5">Management</p>
+            <p className="text-[10px] font-bold text-gray-700 leading-none uppercase tracking-wide">Fair Tech</p>
+            <p className="text-[10px] text-gray-400 mt-0.5">Visitor Management</p>
           </div>
         </div>
 

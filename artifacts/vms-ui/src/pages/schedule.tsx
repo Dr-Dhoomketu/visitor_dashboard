@@ -21,12 +21,20 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
-function FieldLabel({ children }: { children: React.ReactNode }) {
-  return <label className="block text-xs text-gray-500 mb-1 font-medium">{children}</label>;
-}
-
-function FieldError({ message }: { message?: string }) {
-  return message ? <p className="text-xs text-red-500 mt-1">{message}</p> : null;
+function FairTechLogo() {
+  return (
+    <div className="flex items-center gap-2">
+      <svg viewBox="0 0 60 52" width="34" height="28">
+        <polygon points="30,2 58,50 2,50" fill="#2d6be4" />
+        <polygon points="30,14 46,50 14,50" fill="#5b8cf5" />
+        <polygon points="30,26 40,50 20,50" fill="#8db4fa" />
+      </svg>
+      <div>
+        <p style={{ fontSize: 7.5, letterSpacing: 1, color: "#555", fontWeight: 700, textTransform: "uppercase", lineHeight: 1, margin: 0 }}>FAIR TECH SERVICES</p>
+        <p style={{ fontSize: 12, fontWeight: 700, color: "#1a202c", margin: 0 }}>Visitor Management System</p>
+      </div>
+    </div>
+  );
 }
 
 export default function Schedule() {
@@ -41,112 +49,126 @@ export default function Schedule() {
     setTimeout(() => { setSubmitted(false); reset(); }, 3000);
   }
 
-  const inputCls = "w-full bg-gray-100 border border-gray-200 rounded-md px-3 py-2 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:border-blue-400 focus:bg-white transition-colors";
-  const selectCls = inputCls + " appearance-none cursor-pointer";
+  const inp: React.CSSProperties = {
+    display: "block",
+    width: "100%",
+    background: "#f0f4f8",
+    border: "1px solid #dce4ef",
+    borderRadius: 4,
+    padding: "6px 10px",
+    fontSize: 12.5,
+    color: "#374151",
+    outline: "none",
+    boxSizing: "border-box",
+  };
+
+  const selInp: React.CSSProperties = { ...inp, appearance: "none" as any, cursor: "pointer" };
 
   return (
-    <div className="min-h-screen px-4 py-6" style={{ background: "#ddeaf7" }}>
-      <div className="max-w-5xl mx-auto bg-white rounded-2xl shadow-md overflow-hidden flex">
+    <div style={{ minHeight: "100vh", background: "#f0f4f8", padding: "24px 16px" }}>
+      <div style={{ maxWidth: 860, margin: "0 auto", background: "white", borderRadius: 12, overflow: "hidden", boxShadow: "0 2px 16px rgba(0,0,0,0.07)", display: "flex" }}>
         {/* Form side */}
-        <div className="flex-1 p-8">
-          {/* Logo */}
-          <div className="flex items-center gap-2 mb-5">
-            <div className="w-8 h-8 rounded bg-blue-600 flex items-center justify-center">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-              </svg>
-            </div>
-            <div>
-              <p className="text-xs font-bold text-gray-700 leading-none">Visitor Management System</p>
-            </div>
+        <div style={{ flex: 1, padding: "28px 36px" }}>
+          <div style={{ marginBottom: 18 }}>
+            <FairTechLogo />
           </div>
 
-          <h2 className="text-lg font-bold text-gray-800 mb-5">Have an Appointement</h2>
+          <h2 style={{ fontSize: 18, fontWeight: 700, color: "#1a202c", marginBottom: 18 }}>Have an Appointement</h2>
 
           {submitted && (
-            <div className="mb-4 px-4 py-3 bg-green-50 border border-green-200 rounded-lg text-sm text-green-700 font-medium">
-              Appointment booked successfully! A confirmation will be sent to your email.
+            <div style={{ marginBottom: 14, padding: "10px 14px", background: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: 6, fontSize: 12, color: "#16a34a", fontWeight: 600 }}>
+              Appointment booked! A confirmation will be sent to your email.
             </div>
           )}
 
           <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="grid grid-cols-2 gap-x-6 gap-y-3">
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px 20px" }}>
               <div>
-                <FieldLabel>Name</FieldLabel>
-                <input {...register("name")} placeholder="Name" className={inputCls} />
-                <FieldError message={errors.name?.message} />
+                <label style={{ display: "block", fontSize: 11, color: "#6b7280", marginBottom: 3 }}>Name</label>
+                <input {...register("name")} placeholder="Name" style={inp} />
+                {errors.name && <p style={{ fontSize: 10, color: "#ef4444", marginTop: 2 }}>{errors.name.message}</p>}
               </div>
               <div>
-                <FieldLabel>Select Employee</FieldLabel>
-                <select {...register("meetWith")} className={selectCls}>
+                <label style={{ display: "block", fontSize: 11, color: "#6b7280", marginBottom: 3 }}>Select Employee</label>
+                <select {...register("meetWith")} style={selInp}>
                   <option value="">--- Select ---</option>
                   <option value="Alice Johnson">Alice Johnson (HR)</option>
                   <option value="Bob Smith">Bob Smith (Engineering)</option>
                   <option value="Carol White">Carol White (Management)</option>
                   <option value="Reception">Reception</option>
                 </select>
-                <FieldError message={errors.meetWith?.message} />
+                {errors.meetWith && <p style={{ fontSize: 10, color: "#ef4444", marginTop: 2 }}>{errors.meetWith.message}</p>}
               </div>
               <div>
-                <FieldLabel>E-mail</FieldLabel>
-                <input {...register("email")} type="email" placeholder="E-mail" className={inputCls} />
-                <FieldError message={errors.email?.message} />
+                <label style={{ display: "block", fontSize: 11, color: "#6b7280", marginBottom: 3 }}>E-mail</label>
+                <input {...register("email")} type="email" placeholder="E-mail" style={inp} />
+                {errors.email && <p style={{ fontSize: 10, color: "#ef4444", marginTop: 2 }}>{errors.email.message}</p>}
               </div>
               <div>
-                <FieldLabel>Phone No.</FieldLabel>
-                <input {...register("phone")} placeholder="Phone No." className={inputCls} />
-                <FieldError message={errors.phone?.message} />
+                <label style={{ display: "block", fontSize: 11, color: "#6b7280", marginBottom: 3 }}>Phone No.</label>
+                <input {...register("phone")} placeholder="Phone No." style={inp} />
+                {errors.phone && <p style={{ fontSize: 10, color: "#ef4444", marginTop: 2 }}>{errors.phone.message}</p>}
               </div>
               <div>
-                <FieldLabel>Gender</FieldLabel>
-                <select {...register("gender")} className={selectCls}>
+                <label style={{ display: "block", fontSize: 11, color: "#6b7280", marginBottom: 3 }}>Gender</label>
+                <select {...register("gender")} style={selInp}>
                   <option value="">--Select--</option>
                   <option value="Male">Male</option>
                   <option value="Female">Female</option>
                   <option value="Other">Other</option>
                 </select>
-                <FieldError message={errors.gender?.message} />
+                {errors.gender && <p style={{ fontSize: 10, color: "#ef4444", marginTop: 2 }}>{errors.gender.message}</p>}
               </div>
               <div>
-                <FieldLabel>Date</FieldLabel>
-                <input {...register("date")} type="date" placeholder="Date" className={inputCls} />
-                <FieldError message={errors.date?.message} />
+                <label style={{ display: "block", fontSize: 11, color: "#6b7280", marginBottom: 3 }}>Date</label>
+                <input {...register("date")} type="date" style={inp} />
+                {errors.date && <p style={{ fontSize: 10, color: "#ef4444", marginTop: 2 }}>{errors.date.message}</p>}
               </div>
               <div>
-                <FieldLabel>From Time</FieldLabel>
-                <input {...register("fromTime")} type="time" className={inputCls} />
+                <label style={{ display: "block", fontSize: 11, color: "#6b7280", marginBottom: 3 }}>From Time</label>
+                <input {...register("fromTime")} type="time" style={inp} />
               </div>
               <div>
-                <FieldLabel>To Time</FieldLabel>
-                <input {...register("toTime")} type="time" className={inputCls} />
+                <label style={{ display: "block", fontSize: 11, color: "#6b7280", marginBottom: 3 }}>To Time</label>
+                <input {...register("toTime")} type="time" style={inp} />
               </div>
               <div>
-                <FieldLabel>Duration</FieldLabel>
-                <input {...register("duration")} placeholder="Hours" className={inputCls} />
+                <label style={{ display: "block", fontSize: 11, color: "#6b7280", marginBottom: 3 }}>Duration</label>
+                <input {...register("duration")} placeholder="Hours" style={inp} />
               </div>
               <div>
-                <FieldLabel>Status</FieldLabel>
-                <select {...register("status")} className={selectCls}>
+                <label style={{ display: "block", fontSize: 11, color: "#6b7280", marginBottom: 3 }}>Status</label>
+                <select {...register("status")} style={selInp}>
                   <option value="">--Select--</option>
                   <option value="Confirmed">Confirmed</option>
                   <option value="Tentative">Tentative</option>
                 </select>
               </div>
               <div>
-                <FieldLabel>Purpose</FieldLabel>
-                <input {...register("purpose")} placeholder="Purpose" className={inputCls} />
+                <label style={{ display: "block", fontSize: 11, color: "#6b7280", marginBottom: 3 }}>Purpose</label>
+                <input {...register("purpose")} placeholder="Purpose" style={inp} />
               </div>
               <div>
-                <FieldLabel>Address</FieldLabel>
-                <input {...register("address")} placeholder="Address" className={inputCls} />
+                <label style={{ display: "block", fontSize: 11, color: "#6b7280", marginBottom: 3 }}>Address</label>
+                <input {...register("address")} placeholder="Address" style={inp} />
               </div>
             </div>
 
-            <div className="mt-6">
+            <div style={{ marginTop: 18 }}>
               <button
                 type="submit"
                 data-testid="btn-schedule-submit"
-                className="px-8 py-2.5 bg-blue-500 text-white text-sm font-semibold rounded-md hover:bg-blue-600 transition-colors"
+                style={{
+                  padding: "9px 28px",
+                  background: "#2d6be4",
+                  color: "white",
+                  border: "none",
+                  borderRadius: 20,
+                  fontSize: 13,
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  letterSpacing: 1,
+                }}
               >
                 SUBMIT
               </button>
@@ -154,13 +176,12 @@ export default function Schedule() {
           </form>
         </div>
 
-        {/* Image side */}
-        <div className="w-64 flex-shrink-0">
+        {/* Right — photo */}
+        <div style={{ width: 220, flexShrink: 0 }}>
           <img
             src={scheduleImg}
             alt="Reception"
-            className="w-full h-full object-cover"
-            style={{ minHeight: 420 }}
+            style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "right center" }}
           />
         </div>
       </div>

@@ -3,6 +3,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useVisitors } from "@/hooks/use-visitors";
+import checkinImg from "@assets/image_1776014073684.png";
 
 const checkinSchema = z.object({
   name: z.string().min(2, "Name is required"),
@@ -17,109 +18,150 @@ const checkinSchema = z.object({
 
 type FormData = z.infer<typeof checkinSchema>;
 
-function FieldLabel({ children }: { children: React.ReactNode }) {
-  return <label className="block text-xs text-gray-500 mb-1 font-medium">{children}</label>;
-}
-
-function FieldError({ message }: { message?: string }) {
-  if (!message) return null;
-  return <p className="text-xs text-red-500 mt-1">{message}</p>;
+function FairTechLogo() {
+  return (
+    <div className="flex items-center gap-2">
+      <svg viewBox="0 0 60 52" width="32" height="28">
+        <polygon points="30,2 58,50 2,50" fill="#2d6be4" />
+        <polygon points="30,14 46,50 14,50" fill="#5b8cf5" />
+        <polygon points="30,26 40,50 20,50" fill="#8db4fa" />
+      </svg>
+      <div>
+        <p style={{ fontSize: 8, letterSpacing: 1, color: "#555", fontWeight: 700, textTransform: "uppercase", lineHeight: 1 }}>
+          FAIR TECH SERVICES
+        </p>
+      </div>
+    </div>
+  );
 }
 
 export default function CheckIn() {
   const [, setLocation] = useLocation();
   const { addVisitor } = useVisitors();
 
-  const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm<FormData>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({
     resolver: zodResolver(checkinSchema),
     defaultValues: { name: "", aadhaar: "", gender: "", meetWith: "", phone: "", email: "", purpose: "", address: "" },
   });
 
   function onSubmit(values: FormData) {
-    addVisitor({ name: values.name, aadhaar: values.aadhaar, phone: values.phone, email: values.email, purpose: values.purpose, meetWith: values.meetWith });
+    addVisitor({
+      name: values.name,
+      aadhaar: values.aadhaar,
+      phone: values.phone,
+      email: values.email,
+      purpose: values.purpose,
+      meetWith: values.meetWith,
+    });
     setLocation("/webcam");
   }
 
-  const inputCls = "w-full bg-gray-100 border border-gray-200 rounded-md px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:border-blue-400 focus:bg-white transition-colors";
-  const selectCls = inputCls + " appearance-none cursor-pointer";
+  const inp = {
+    style: {
+      display: "block",
+      width: "100%",
+      background: "#f0f4f8",
+      border: "1px solid #dce4ef",
+      borderRadius: 20,
+      padding: "8px 16px",
+      fontSize: 13,
+      color: "#374151",
+      outline: "none",
+    } as React.CSSProperties,
+  };
 
   return (
-    <div className="min-h-screen flex" style={{ background: "#ddeaf7" }}>
+    <div style={{ display: "flex", minHeight: "100vh", background: "#f0f4f8" }}>
       {/* Left — form */}
-      <div className="flex-1 flex flex-col px-10 py-10">
-        {/* Logo */}
-        <div className="flex items-center gap-2 mb-8">
-          <div className="w-8 h-8 rounded bg-blue-600 flex items-center justify-center">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-            </svg>
-          </div>
-          <span className="text-xs font-semibold text-gray-600">Fair Tech Services</span>
+      <div style={{ flex: 1, padding: "32px 40px 32px 48px" }}>
+        <div style={{ marginBottom: 20 }}>
+          <FairTechLogo />
         </div>
 
-        <h1 className="text-2xl font-bold text-gray-800 mb-6">Check in</h1>
+        <h1 style={{ fontSize: 26, fontWeight: 700, color: "#1a202c", marginBottom: 22 }}>Check in</h1>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="flex-1">
-          <div className="grid grid-cols-2 gap-x-6 gap-y-4">
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px 24px" }}>
             <div>
-              <FieldLabel>Name</FieldLabel>
-              <input {...register("name")} placeholder="Name" className={inputCls} data-testid="input-checkin-name" />
-              <FieldError message={errors.name?.message} />
+              <label style={{ display: "block", fontSize: 11, color: "#6b7280", marginBottom: 4 }}>Name</label>
+              <input {...register("name")} placeholder="Name" {...inp} data-testid="input-checkin-name" />
+              {errors.name && <p style={{ fontSize: 10, color: "#ef4444", marginTop: 2 }}>{errors.name.message}</p>}
             </div>
             <div>
-              <FieldLabel>National-ID</FieldLabel>
-              <input {...register("aadhaar")} placeholder="Adhaar Number" className={inputCls} data-testid="input-checkin-aadhaar" />
-              <FieldError message={errors.aadhaar?.message} />
+              <label style={{ display: "block", fontSize: 11, color: "#6b7280", marginBottom: 4 }}>National-ID</label>
+              <input {...register("aadhaar")} placeholder="Adhaar Number" {...inp} data-testid="input-checkin-aadhaar" />
+              {errors.aadhaar && <p style={{ fontSize: 10, color: "#ef4444", marginTop: 2 }}>{errors.aadhaar.message}</p>}
             </div>
             <div>
-              <FieldLabel>Gender</FieldLabel>
-              <select {...register("gender")} className={selectCls} data-testid="select-checkin-gender">
+              <label style={{ display: "block", fontSize: 11, color: "#6b7280", marginBottom: 4 }}>Gender</label>
+              <select
+                {...register("gender")}
+                data-testid="select-checkin-gender"
+                style={{ ...inp.style, appearance: "none", cursor: "pointer" }}
+              >
                 <option value="">--Select--</option>
                 <option value="Male">Male</option>
                 <option value="Female">Female</option>
                 <option value="Other">Other</option>
               </select>
-              <FieldError message={errors.gender?.message} />
+              {errors.gender && <p style={{ fontSize: 10, color: "#ef4444", marginTop: 2 }}>{errors.gender.message}</p>}
             </div>
             <div>
-              <FieldLabel>Meet With</FieldLabel>
-              <select {...register("meetWith")} className={selectCls} data-testid="select-checkin-meetwith">
+              <label style={{ display: "block", fontSize: 11, color: "#6b7280", marginBottom: 4 }}>Meet With</label>
+              <select
+                {...register("meetWith")}
+                data-testid="select-checkin-meetwith"
+                style={{ ...inp.style, appearance: "none", cursor: "pointer" }}
+              >
                 <option value="">-- Select --</option>
                 <option value="Alice Johnson">Alice Johnson (HR)</option>
                 <option value="Bob Smith">Bob Smith (Engineering)</option>
                 <option value="Carol White">Carol White (Management)</option>
                 <option value="Reception">Reception</option>
               </select>
-              <FieldError message={errors.meetWith?.message} />
+              {errors.meetWith && <p style={{ fontSize: 10, color: "#ef4444", marginTop: 2 }}>{errors.meetWith.message}</p>}
             </div>
             <div>
-              <FieldLabel>Phone No.</FieldLabel>
-              <input {...register("phone")} placeholder="Phone No." className={inputCls} data-testid="input-checkin-phone" />
-              <FieldError message={errors.phone?.message} />
+              <label style={{ display: "block", fontSize: 11, color: "#6b7280", marginBottom: 4 }}>Phone No.</label>
+              <input {...register("phone")} placeholder="Phone No." {...inp} data-testid="input-checkin-phone" />
+              {errors.phone && <p style={{ fontSize: 10, color: "#ef4444", marginTop: 2 }}>{errors.phone.message}</p>}
             </div>
             <div>
-              <FieldLabel>E-mail</FieldLabel>
-              <input {...register("email")} type="email" placeholder="Email" className={inputCls} data-testid="input-checkin-email" />
-              <FieldError message={errors.email?.message} />
+              <label style={{ display: "block", fontSize: 11, color: "#6b7280", marginBottom: 4 }}>E-mail</label>
+              <input {...register("email")} type="email" placeholder="Email" {...inp} data-testid="input-checkin-email" />
+              {errors.email && <p style={{ fontSize: 10, color: "#ef4444", marginTop: 2 }}>{errors.email.message}</p>}
             </div>
           </div>
 
-          <div className="mt-4">
-            <FieldLabel>Purpose</FieldLabel>
-            <input {...register("purpose")} placeholder="purpose" className={inputCls} data-testid="input-checkin-purpose" />
-            <FieldError message={errors.purpose?.message} />
+          <div style={{ marginTop: 12 }}>
+            <label style={{ display: "block", fontSize: 11, color: "#6b7280", marginBottom: 4 }}>Purpose</label>
+            <input {...register("purpose")} placeholder="purpose" {...inp} data-testid="input-checkin-purpose" />
+            {errors.purpose && <p style={{ fontSize: 10, color: "#ef4444", marginTop: 2 }}>{errors.purpose.message}</p>}
+          </div>
+          <div style={{ marginTop: 12 }}>
+            <label style={{ display: "block", fontSize: 11, color: "#6b7280", marginBottom: 4 }}>Address</label>
+            <input {...register("address")} placeholder="Address" {...inp} />
           </div>
 
-          <div className="mt-4">
-            <FieldLabel>Address</FieldLabel>
-            <input {...register("address")} placeholder="Address" className={inputCls} />
-          </div>
-
-          <div className="mt-8">
+          <div style={{ marginTop: 24 }}>
             <button
               type="submit"
               data-testid="btn-checkin-submit"
-              className="px-8 py-2.5 bg-blue-500 text-white text-sm font-semibold rounded-md hover:bg-blue-600 transition-colors"
+              style={{
+                padding: "9px 28px",
+                background: "#2d6be4",
+                color: "white",
+                border: "none",
+                borderRadius: 6,
+                fontSize: 13,
+                fontWeight: 700,
+                cursor: "pointer",
+                letterSpacing: 1,
+              }}
             >
               CHECK IN
             </button>
@@ -127,34 +169,17 @@ export default function CheckIn() {
         </form>
       </div>
 
-      {/* Right — blue panel */}
-      <div className="w-[42%] flex-shrink-0 flex flex-col items-center justify-center relative overflow-hidden"
-        style={{ background: "linear-gradient(135deg, #2196f3 0%, #1565c0 100%)" }}>
-        <div className="text-center text-white px-10 z-10">
-          <h2 className="text-xl font-bold mb-2">Visitor Management System</h2>
-          <p className="text-sm text-blue-100 italic mb-6">"Empowering Success Through Value."</p>
-          <a href="/login"
-            className="inline-block px-6 py-2 border-2 border-white text-white text-sm font-semibold rounded-full hover:bg-white hover:text-blue-600 transition-colors"
-          >
-            LOG IN
-          </a>
-        </div>
-        {/* Decorative circles */}
-        <div className="absolute bottom-0 right-0 w-64 h-64 rounded-full bg-white/5 translate-x-16 translate-y-16" />
-        <div className="absolute top-0 left-0 w-48 h-48 rounded-full bg-white/5 -translate-x-12 -translate-y-12" />
-        <div className="absolute bottom-8 left-0 right-0 flex justify-center">
-          <svg viewBox="0 0 280 200" className="w-72 opacity-90" fill="none">
-            {/* Simple desk illustration */}
-            <rect x="60" y="130" width="160" height="12" rx="4" fill="rgba(255,255,255,0.3)" />
-            <rect x="80" y="142" width="8" height="40" rx="2" fill="rgba(255,255,255,0.2)" />
-            <rect x="192" y="142" width="8" height="40" rx="2" fill="rgba(255,255,255,0.2)" />
-            <rect x="100" y="90" width="80" height="55" rx="4" fill="rgba(255,255,255,0.25)" />
-            <rect x="105" y="96" width="70" height="40" rx="2" fill="rgba(255,255,255,0.3)" />
-            <circle cx="175" cy="100" r="18" fill="rgba(255,255,255,0.2)" />
-            <path d="M168 100 l5 5 l9-9" stroke="white" strokeWidth="2" strokeLinecap="round" />
-          </svg>
-        </div>
-      </div>
+      {/* Right — reference screenshot panel (shows the illustration portion) */}
+      <div
+        style={{
+          width: "43%",
+          flexShrink: 0,
+          backgroundImage: `url(${checkinImg})`,
+          backgroundSize: "230% auto",
+          backgroundPosition: "right center",
+          backgroundRepeat: "no-repeat",
+        }}
+      />
     </div>
   );
 }
