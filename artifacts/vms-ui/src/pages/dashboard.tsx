@@ -55,7 +55,7 @@ export default function Dashboard() {
         <StatCard label="Today's Visitors" value={24} note="+4 since last hour" icon={Activity} color="#9c27b0" />
         <StatCard label="Total Check-In" value={18} note="Currently on premise" icon={UserCheck} color="#4caf50" />
         <StatCard label="Total Check-Out" value={6} note="Departed today" icon={UserMinus} color="#f44336" />
-        <StatCard label="Appointments" value={12} note="Pre-registered" icon={CalendarCheck} color="#ff9800" />
+        <StatCard label="Pre-Visitor" value={12} note="Pre-registered" icon={CalendarCheck} color="#ff9800" />
       </div>
 
       {/* Charts */}
