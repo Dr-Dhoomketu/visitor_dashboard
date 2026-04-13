@@ -90,7 +90,16 @@ export default function MainLayout({ children }: MainLayoutProps) {
       <div className="flex-1 flex flex-col min-w-0">
         {/* Header */}
         <header className="h-14 flex items-center justify-between px-6 bg-white border-b border-gray-100 shadow-sm">
-          <h1 className="text-sm font-semibold text-gray-700">{currentPage}</h1>
+          <div className="flex items-center gap-2 text-xs text-gray-400">
+            <Link href="/dashboard" className="hover:text-blue-600 transition-colors">Home</Link>
+            {currentPage !== "Dashboard" && (
+              <>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="flex-shrink-0"><polyline points="9 18 15 12 9 6"/></svg>
+                <span className="text-gray-700 font-semibold">{currentPage}</span>
+              </>
+            )}
+            {currentPage === "Dashboard" && <span className="text-gray-700 font-semibold">Dashboard</span>}
+          </div>
           <div className="flex items-center gap-3">
             <span className="text-xs text-gray-400 hidden sm:block">Security Admin</span>
             <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-bold">SA</div>
