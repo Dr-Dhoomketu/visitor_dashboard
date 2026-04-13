@@ -1,11 +1,13 @@
 # Visitor Management System (VMS)
 
-A modern, full-featured Visitor Management System built with **React**, **Vite**, and **Tailwind CSS**. Manage visitor check-ins, pre-registrations, employee directories, departments, designations, and system users — all in one clean UI.
+A modern, full-featured Visitor Management System built with **React**, **Vite**, and **Tailwind CSS**.
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Dr-Dhoomketu/visitor_dashboard)
 
 ## Features
 
 - **Home Page** — Three entry points: Schedule Appointment, Previous Visits Log, Walk-in Check-In
-- **Check-In Flow** — Multi-step visitor registration form (Name, National ID, Gender, Host, Phone, Email, Purpose, Address) → Webcam capture
+- **Check-In Flow** — Multi-step visitor registration form → Webcam/camera photo capture
 - **Approval Dashboard** — Approve or reject visitor requests with live pending/approved/rejected counts
 - **Schedule Appointment** — Pre-book visits; visitors receive confirmation
 - **Been Here Before** — Returning visitor lookup by mobile number
@@ -26,6 +28,7 @@ A modern, full-featured Visitor Management System built with **React**, **Vite**
 - **Wouter** for client-side routing
 - **Recharts** for dashboard charts
 - **React Context** for all state (no backend required)
+- **Capacitor** for iOS & Android native builds
 - **pnpm workspaces** monorepo structure
 
 ## Getting Started
@@ -40,6 +43,18 @@ pnpm --filter @workspace/vms-ui run dev
 
 The app will be available at `http://localhost:5173`.
 
+## Deploy to Vercel
+
+1. Push this repo to GitHub
+2. Go to [vercel.com](https://vercel.com) → New Project → Import your repo
+3. Vercel auto-detects settings from `vercel.json` — just click **Deploy**
+
+Or use the button above.
+
+## Mobile (iOS & Android)
+
+See [`artifacts/vms-ui/MOBILE_SETUP.md`](artifacts/vms-ui/MOBILE_SETUP.md) for Capacitor setup instructions.
+
 ## Project Structure
 
 ```
@@ -47,25 +62,9 @@ artifacts/
 └── vms-ui/
     └── src/
         ├── pages/          # All page components
-        │   ├── home.tsx
-        │   ├── checkin.tsx
-        │   ├── webcam.tsx
-        │   ├── approval.tsx
-        │   ├── schedule.tsx
-        │   ├── previous-visits.tsx
-        │   ├── login.tsx
-        │   ├── dashboard.tsx
-        │   ├── department.tsx
-        │   ├── designation.tsx
-        │   ├── employee.tsx
-        │   ├── visitor.tsx
-        │   ├── pre-visitor.tsx
-        │   └── administrator.tsx
-        ├── components/
-        │   └── layout.tsx   # Blue sidebar navigation layout
-        ├── hooks/
-        │   └── use-visitors.tsx  # Global visitor state (React Context)
-        └── App.tsx           # Routing
+        ├── components/     # Layout, sidebar
+        ├── hooks/          # use-visitors (global state)
+        └── App.tsx         # Routing
 ```
 
 ## Pages & Navigation

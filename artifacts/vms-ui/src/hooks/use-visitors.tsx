@@ -13,11 +13,14 @@ export interface Visitor {
   status: VisitorStatus;
   date: string;
   time: string;
+  photo?: string; // base64 data URL captured from webcam
 }
 
 interface VisitorContextType {
   visitors: Visitor[];
-  addVisitor: (visitor: Omit<Visitor, "id" | "status" | "date" | "time">) => void;
+  pendingVisitor: Omit<Visitor, "id" | "status" | "date" | "time" | "photo"> | null;
+  addVisitor: (visitor: Omit<Visitor, "id" | "status" | "date" | "time" | "photo">) => void;
+  confirmVisitorWithPhoto: (photo: string) => void;
   approveVisitor: (id: string) => void;
   rejectVisitor: (id: string) => void;
 }
@@ -37,16 +40,26 @@ const VisitorContext = createContext<VisitorContextType | undefined>(undefined);
 
 export function VisitorProvider({ children }: { children: ReactNode }) {
   const [visitors, setVisitors] = useState<Visitor[]>(mockVisitors);
+  const [pendingVisitor, setPendingVisitor] = useState<Omit<Visitor, "id" | "status" | "date" | "time" | "photo"> | null>(null);
 
-  const addVisitor = (visitorData: Omit<Visitor, "id" | "status" | "date" | "time">) => {
+  // Step 1: store form data, navigate to webcam
+  const addVisitor = (visitorData: Omit<Visitor, "id" | "status" | "date" | "time" | "photo">) => {
+    setPendingVisitor(visitorData);
+  };
+
+  // Step 2: called from webcam page with the captured photo
+  const confirmVisitorWithPhoto = (photo: string) => {
+    if (!pendingVisitor) return;
     const newVisitor: Visitor = {
-      ...visitorData,
-      id: `VIS-${String(visitors.length + 1).padStart(3, '0')}`,
+      ...pendingVisitor,
+      photo,
+      id: `VIS-${String(visitors.length + 1).padStart(3, "0")}`,
       status: "Pending",
-      date: new Date().toISOString().split('T')[0],
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      date: new Date().toISOString().split("T")[0],
+      time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
     };
-    setVisitors(prev => [newVisitor, ...prev]);
+    setVisitors((prev) => [newVisitor, ...prev]);
+    setPendingVisitor(null);
   };
 
   const approveVisitor = (id: string) => {
@@ -58,7 +71,7 @@ export function VisitorProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <VisitorContext.Provider value={{ visitors, addVisitor, approveVisitor, rejectVisitor }}>
+    <VisitorContext.Provider value={{ visitors, pendingVisitor, addVisitor, confirmVisitorWithPhoto, approveVisitor, rejectVisitor }}>
       {children}
     </VisitorContext.Provider>
   );

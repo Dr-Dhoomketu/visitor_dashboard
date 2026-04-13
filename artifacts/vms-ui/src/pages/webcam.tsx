@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useLocation } from "wouter";
+import { Capacitor } from "@capacitor/core";
+import { Camera, CameraResultType, CameraSource } from "@capacitor/camera";
+import { useVisitors } from "@/hooks/use-visitors";
 
 function GeometricCorner({ position }: { position: "top-right" | "bottom-left" }) {
   const isTop = position === "top-right";
-  const transform = isTop ? "none" : "rotate(180deg)";
-
   return (
     <div
       style={{
@@ -12,7 +13,7 @@ function GeometricCorner({ position }: { position: "top-right" | "bottom-left" }
         ...(isTop ? { top: 0, right: 0 } : { bottom: 0, left: 0 }),
         width: 80,
         height: 80,
-        transform,
+        transform: isTop ? "none" : "rotate(180deg)",
         overflow: "hidden",
       }}
     >
@@ -28,7 +29,84 @@ function GeometricCorner({ position }: { position: "top-right" | "bottom-left" }
 
 export default function Webcam() {
   const [, setLocation] = useLocation();
-  const [captured, setCaptured] = useState(false);
+  const { pendingVisitor, confirmVisitorWithPhoto } = useVisitors();
+  const [photoDataUrl, setPhotoDataUrl] = useState<string | null>(null);
+  const [streaming, setStreaming] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+  const isNative = Capacitor.isNativePlatform();
+
+  // Start web camera stream
+  const startWebCamera = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      streamRef.current = stream;
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        videoRef.current.play();
+      }
+      setStreaming(true);
+    } catch {
+      alert("Camera access denied or unavailable.");
+    }
+  };
+
+  const stopWebCamera = () => {
+    streamRef.current?.getTracks().forEach((t) => t.stop());
+    streamRef.current = null;
+    setStreaming(false);
+  };
+
+  // Capture from web camera
+  const captureWeb = () => {
+    if (!videoRef.current || !canvasRef.current) return;
+    const canvas = canvasRef.current;
+    canvas.width = videoRef.current.videoWidth;
+    canvas.height = videoRef.current.videoHeight;
+    canvas.getContext("2d")?.drawImage(videoRef.current, 0, 0);
+    setPhotoDataUrl(canvas.toDataURL("image/jpeg"));
+    stopWebCamera();
+  };
+
+  // Capture using Capacitor Camera (iOS / Android)
+  const captureNative = async () => {
+    try {
+      // Explicitly request camera permission before opening camera
+      const { camera } = await Camera.requestPermissions({ permissions: ["camera"] });
+      if (camera === "denied") {
+        alert("Camera permission is required to capture visitor photos. Please enable it in your device settings.");
+        return;
+      }
+      const photo = await Camera.getPhoto({
+        resultType: CameraResultType.DataUrl,
+        source: CameraSource.Camera,
+        quality: 85,
+        width: 400,
+      });
+      if (photo.dataUrl) setPhotoDataUrl(photo.dataUrl);
+    } catch {
+      // user cancelled
+    }
+  };
+
+  const handleCapture = () => {
+    if (isNative) {
+      captureNative();
+    } else if (!streaming) {
+      startWebCamera();
+    } else {
+      captureWeb();
+    }
+  };
+
+  const handleRetake = () => {
+    setPhotoDataUrl(null);
+    if (!isNative) startWebCamera();
+  };
+
+  // Clean up stream on unmount
+  useEffect(() => () => stopWebCamera(), []);
 
   return (
     <div
@@ -38,6 +116,7 @@ export default function Webcam() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
+        flexWrap: "wrap",
         gap: 40,
         padding: "32px 16px",
       }}
@@ -59,50 +138,63 @@ export default function Webcam() {
           Take Your Picture
         </h2>
 
+        {/* Preview area */}
         <div
           style={{
             border: "2px solid #333",
             width: 240,
-            height: 170,
+            height: 180,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             marginBottom: 24,
-            background: captured ? "#f0fdf4" : "white",
+            background: "#f8fafc",
+            overflow: "hidden",
+            borderRadius: 4,
+            position: "relative",
           }}
         >
-          {captured ? (
-            <div style={{ textAlign: "center" }}>
-              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5">
-                <circle cx="12" cy="12" r="10" />
-                <path d="M8 12l3 3 5-5" strokeLinecap="round" strokeLinejoin="round" />
+          {photoDataUrl ? (
+            <img src={photoDataUrl} alt="Captured" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          ) : streaming ? (
+            <video ref={videoRef} style={{ width: "100%", height: "100%", objectFit: "cover" }} muted playsInline />
+          ) : (
+            <div style={{ textAlign: "center", color: "#94a3b8" }}>
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                <circle cx="12" cy="13" r="4" />
               </svg>
-              <p style={{ fontSize: 12, color: "#16a34a", marginTop: 6, fontWeight: 600 }}>Photo Captured!</p>
+              <p style={{ fontSize: 11, marginTop: 6 }}>
+                {isNative ? "Tap Capture" : "Click to start camera"}
+              </p>
             </div>
-          ) : null}
+          )}
         </div>
 
+        {/* Hidden canvas for web capture */}
+        <canvas ref={canvasRef} style={{ display: "none" }} />
+
         <div style={{ display: "flex", gap: 16 }}>
-          {!captured ? (
+          {!photoDataUrl ? (
             <button
-              onClick={() => setCaptured(true)}
+              onClick={handleCapture}
               data-testid="btn-capture-photo"
               style={{
                 padding: "8px 28px",
                 border: "1.5px solid #bbb",
                 borderRadius: 20,
-                background: "white",
+                background: streaming ? "#2563eb" : "white",
+                color: streaming ? "white" : "#555",
                 fontSize: 13,
-                color: "#555",
                 cursor: "pointer",
               }}
             >
-              Capture
+              {streaming ? "Capture" : "Start Camera"}
             </button>
           ) : (
             <>
               <button
-                onClick={() => setCaptured(false)}
+                onClick={handleRetake}
                 data-testid="btn-retake-photo"
                 style={{
                   padding: "8px 22px",
@@ -117,19 +209,23 @@ export default function Webcam() {
                 Retake
               </button>
               <button
-                onClick={() => setLocation("/dashboard")}
+                onClick={() => {
+                  confirmVisitorWithPhoto(photoDataUrl!);
+                  setLocation("/dashboard");
+                }}
                 data-testid="btn-proceed-checkin"
                 style={{
                   padding: "8px 22px",
-                  border: "1.5px solid #bbb",
+                  border: "none",
                   borderRadius: 20,
-                  background: "white",
+                  background: "#2563eb",
+                  color: "white",
                   fontSize: 13,
-                  color: "#555",
                   cursor: "pointer",
+                  fontWeight: 600,
                 }}
               >
-                Next
+                Next →
               </button>
             </>
           )}
@@ -150,17 +246,10 @@ export default function Webcam() {
         <GeometricCorner position="top-right" />
         <GeometricCorner position="bottom-left" />
 
-        {/* Pass header */}
-        <div
-          style={{
-            padding: "18px 16px 12px",
-            textAlign: "center",
-          }}
-        >
-          <p style={{ fontSize: 16, fontWeight: 700, color: "#1a1a2e", marginBottom: 0 }}>Visitor Pass</p>
+        <div style={{ padding: "18px 16px 12px", textAlign: "center" }}>
+          <p style={{ fontSize: 16, fontWeight: 700, color: "#1a1a2e" }}>Visitor Pass</p>
         </div>
 
-        {/* Circular avatar */}
         <div style={{ display: "flex", justifyContent: "center", marginBottom: 8 }}>
           <div
             style={{
@@ -175,33 +264,29 @@ export default function Webcam() {
               overflow: "hidden",
             }}
           >
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#93c5fd" strokeWidth="1.5">
-              <circle cx="12" cy="8" r="4" />
-              <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
-            </svg>
+            {photoDataUrl ? (
+              <img src={photoDataUrl} alt="Visitor" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            ) : (
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#93c5fd" strokeWidth="1.5">
+                <circle cx="12" cy="8" r="4" />
+                <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
+              </svg>
+            )}
           </div>
         </div>
 
         <h3 style={{ textAlign: "center", fontSize: 14, fontWeight: 700, color: "#2563eb", marginBottom: 10 }}>
-          John Doe
+          {pendingVisitor?.name ?? "Visitor"}
         </h3>
 
         <div style={{ padding: "0 16px", fontSize: 11, color: "#374151", lineHeight: 1.8 }}>
-          <p><strong>Email:</strong> john@example.com</p>
-          <p><strong>Phone:</strong> (123) 456-7890</p>
-          <p><strong>Company:</strong> ABC Inc.</p>
-          <p><strong>Address:</strong> 123 Main St, City</p>
+          <p><strong>Email:</strong> {pendingVisitor?.email ?? "—"}</p>
+          <p><strong>Phone:</strong> {pendingVisitor?.phone ?? "—"}</p>
+          <p><strong>Meet:</strong> {pendingVisitor?.meetWith ?? "—"}</p>
+          <p><strong>Purpose:</strong> {pendingVisitor?.purpose ?? "—"}</p>
         </div>
 
-        <p
-          style={{
-            textAlign: "center",
-            fontSize: 11,
-            color: "#2563eb",
-            fontWeight: 600,
-            padding: "12px 0 16px",
-          }}
-        >
+        <p style={{ textAlign: "center", fontSize: 11, color: "#2563eb", fontWeight: 600, padding: "12px 0 16px" }}>
           VTS infosoft PVT LTD
         </p>
       </div>
