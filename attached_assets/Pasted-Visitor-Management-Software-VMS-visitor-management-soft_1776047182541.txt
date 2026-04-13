@@ -1,0 +1,122 @@
+Visitor Management Software (VMS)
+visitor management software offers organizations a modern, efficient, and secure
+way to manage and monitor the flow of visitors into their facilities. It helps
+improve security, compliance, and the overall visitor experience while reducing
+administrative tasks associated with visitor registration. Different software
+providers offer various features, so organizations can choose a solution that aligns
+with their specific needs and requirements.
+The purpose of visitor management software is to efficiently and securely manage
+visitors entering a business, organization, or facility. It serves several key purposes:
+1. Enhanced Security: Visitor management software helps enhance the security
+of a facility by tracking who enters and exits, which can be critical for ensuring
+that only authorized individuals gain access. It can also check visitors against
+watchlists or databases to identify potential security threats.
+2. Improved Safety: In addition to security, visitor management systems can
+contribute to safety by keeping a record of who is in the building at any given
+time. This can be essential for emergency evacuations or contact tracing during
+health crises.
+3. Efficiency: Visitor management software reduces the administrative burden
+associated with manual visitor registration and tracking. This frees up staff time
+for other tasks and can help organizations operate more efficiently.
+4. Compliance: Many industries and organizations are subject to regulatory
+requirements that mandate visitor tracking and record-keeping. Visitor
+management software helps ensure compliance with these regulations by
+automatically maintaining visitor records.
+5. Professional Image: Using modern technology for visitor registration conveys
+a professional image of the organization. It shows that the organization values
+security, efficiency, and the visitor experience.
+6. Data Analysis: The data collected by visitor management systems can be
+analyzed to gain insights into visitor patterns, peak visit times, and other
+valuable information. This data can be used to optimize staffing, security
+measures, and facility layouts.
+7. Access Control Integration: Some visitor management solutions integrate
+with access control systems, allowing authorized visitors to access specific
+areas or receive temporary access credentials.
+8. Visitor Accountability: By providing visitor badges or passes, the software
+holds visitors accountable for their actions during their stay and helps identify
+them in the event of any incidents.
+9. Visitor Experience: A smooth, organized check-in process contributes to a
+positive visitor experience, which can be especially important for businesses
+focused on customer service or organizations hosting events or conferences.
+ Here is a Home Page of visitor management software.
+ On this page, you'll find three options:-
+a) Schedule an Appointment
+b) Previous Visits Log
+c) Log In/Check In
+ When you click on the 'Log-in/Check-in' option, an animated page opens. Upon
+selecting the 'Check-in' option on the left side of this page, a corresponding
+section or page is displayed below
+ Here is a Check-in Form
+ In this page, please fill in the required details, including your Name,
+National ID (Aadhar Card No), Gender, the person you wish to meet
+(Meet With), Phone Number, Email, Purpose of your visit, and Address.
+Once you have completed the form, click the 'Check-in' option. After
+clicking 'Check-in,' the webcam page will open.
+ Here is a Webcam page
+ Here you can captured image of an visitor .
+ After this process, an email is generated and sent to the intended person,
+notifying them of the visitor's presence and desire to meet.
+ Here is a Approval page
+ Once the employee approves the visitor, the individual is granted permission
+to meet with the designated person from this page.
+ On this page, 'Pending' displays the number of pending requests, 'Approved'
+indicates the total number of approved requests, and 'Rejected' shows the
+count of rejected requests.
+ The list below represents the Visitor List, where requests can be approved or
+rejected. Once any action, be it approval or rejection, is performed, the
+respective buttons are disabled to prevent further actions. Subsequently, an
+email notification is sent to the visitor informing them of the approval or
+rejection.
+ Here is Have an Appointment Page.
+ This is the appointment page where you can enter basic
+information. After completing this step, the visitor will receive an
+email confirming the successful booking of their appointment.
+ Here is Been Here Before
+ This page is designed for returning visitors. You can enter their
+mobile number to retrieve all relevant information and provide
+details about the purpose of their visit.
+ Here is a login page
+ Here, you can input your user ID and password to log in.
+ Here is a Dashboard
+ In the dashboard, the 'Total Visitor' metric signifies the overall count of
+visitors we have welcomed. Similarly, 'Today’s Visitors' reflects the total
+number of visitors received today, 'Total Check-out' indicates the number
+of visitors who have completed their visit and checked out, while 'Total
+Check-in' signifies the count of visitors who have successfully checked
+in. Additionally, the 'Pre-Visitor' metric represents the number of
+employees who have booked appointments in advance.
+ Below this, you'll find a list of approved visitors, each accompanied by a
+unique visitor ID. This ID specifically identifies those whose visitor
+requests have been successfully approved.
+ Here is a Department Page.
+ You can add new departments by selecting the 'Add Department' option.
+Below, there is a list of existing departments displayed.
+ In the department list, you'll find the Department ID, Department Name,
+and their status, which can be either 'Active' or 'Inactive.' For each
+department, In Action you have the option to 'Delete' or 'Edit' it.
+ Here is a Designation Page.
+ You can add new Designation by selecting the 'Add Department' option.
+Below, there is a list of existing Designation displayed.
+ In the department list, you'll find the Designation ID, Designation Name,
+and their status, which can be either 'Active' or 'Inactive.' For each
+designation, In Action you have the option to 'Delete' or 'Edit' it.
+ Here is a Employee Page.
+ You can add New Employee by selecting the 'Add Employee' option.
+Below, there is a list of existing Employee displayed.
+ In the Employee list, you'll find the Employee ID, Employee Name,
+Employee E-mail, Employee Phone Number, and their status, which can
+be either 'Active' or 'Inactive.' In Action you have the option to 'Delete'
+or 'Edit' it.
+ Here is a Visitor Page.
+ Below, you'll find a comprehensive list of existing visitors,
+organized by the days they were recorded.
+ Here is a Pre-visitor Page
+ This is a pre-visitor Report page that allows you to search for Report lists
+based on specific dates. Once you enter your search criteria, you will receive
+the pre-visitor list that matches your search.
+ Here is a User Page Under Administrator Option
+In the Administrator page you can add Users .
+ You can add New User by selecting the 'Add User’ option. Below, there
+is a list of existing Users displayed.
+ In the User list, you'll find the User ID, User Name, User E-mail ,
+Department , Designation and their Action option to 'delete' or 'Edit' it.

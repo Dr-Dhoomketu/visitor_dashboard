@@ -14,6 +14,12 @@ import Dashboard from "@/pages/dashboard";
 import Approval from "@/pages/approval";
 import Schedule from "@/pages/schedule";
 import PreviousVisits from "@/pages/previous-visits";
+import Department from "@/pages/department";
+import Designation from "@/pages/designation";
+import Employee from "@/pages/employee";
+import Visitor from "@/pages/visitor";
+import PreVisitor from "@/pages/pre-visitor";
+import Administrator from "@/pages/administrator";
 
 const queryClient = new QueryClient();
 
@@ -37,8 +43,14 @@ function Router() {
       <Route path="/webcam" component={Webcam} />
       <Route path="/schedule" component={Schedule} />
 
-      {/* Admin pages — with sidebar */}
+      {/* Admin pages — with blue sidebar */}
       <LayoutRoute path="/dashboard" component={Dashboard} />
+      <LayoutRoute path="/department" component={Department} />
+      <LayoutRoute path="/designation" component={Designation} />
+      <LayoutRoute path="/employee" component={Employee} />
+      <LayoutRoute path="/visitor" component={Visitor} />
+      <LayoutRoute path="/pre-visitor" component={PreVisitor} />
+      <LayoutRoute path="/administrator" component={Administrator} />
       <LayoutRoute path="/approval" component={Approval} />
       <LayoutRoute path="/previous-visits" component={PreviousVisits} />
 
