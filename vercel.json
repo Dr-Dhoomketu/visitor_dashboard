@@ -1,5 +1,5 @@
 {
-  "buildCommand": "pnpm --filter @workspace/vms-ui run build",
+  "buildCommand": "cd artifacts/vms-ui && pnpm run build",
   "outputDirectory": "artifacts/vms-ui/dist",
   "installCommand": "pnpm install --no-frozen-lockfile",
   "framework": null,
