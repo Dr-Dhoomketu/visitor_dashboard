@@ -1,0 +1,17 @@
+ WARN  GET https://registry.npmjs.org/@radix-ui%2Freact-navigation-menu error (ERR_INVALID_THIS). Will retry in 1 minute. 1 retries left.
+ WARN  GET https://registry.npmjs.org/@radix-ui%2Freact-popover error (ERR_INVALID_THIS). Will retry in 1 minute. 1 retries left.
+ WARN  GET https://registry.npmjs.org/@radix-ui%2Freact-progress error (ERR_INVALID_THIS). Will retry in 1 minute. 1 retries left.
+ WARN  GET https://registry.npmjs.org/@radix-ui%2Freact-radio-group error (ERR_INVALID_THIS). Will retry in 10 seconds. 2 retries left.
+ ERR_PNPM_META_FETCH_FAIL  GET https://registry.npmjs.org/@hookform%2Fresolvers: Value of "this" must be of type URLSearchParams
+ WARN  GET https://registry.npmjs.org/@radix-ui%2Freact-scroll-area error (ERR_INVALID_THIS). Will retry in 10 seconds. 2 retries left.
+ WARN  GET https://registry.npmjs.org/@radix-ui%2Freact-select error (ERR_INVALID_THIS). Will retry in 10 seconds. 2 retries left.
+ WARN  GET https://registry.npmjs.org/@radix-ui%2Freact-separator error (ERR_INVALID_THIS). Will retry in 10 seconds. 2 retries left.
+ WARN  GET https://registry.npmjs.org/@radix-ui%2Freact-slider error (ERR_INVALID_THIS). Will retry in 10 seconds. 2 retries left.
+ WARN  GET https://registry.npmjs.org/@radix-ui%2Freact-slot error (ERR_INVALID_THIS). Will retry in 10 seconds. 2 retries left.
+ WARN  GET https://registry.npmjs.org/@radix-ui%2Freact-switch error (ERR_INVALID_THIS). Will retry in 10 seconds. 2 retries left.
+ WARN  GET https://registry.npmjs.org/@radix-ui%2Freact-tabs error (ERR_INVALID_THIS). Will retry in 10 seconds. 2 retries left.
+ WARN  GET https://registry.npmjs.org/@radix-ui%2Freact-toast error (ERR_INVALID_THIS). Will retry in 10 seconds. 2 retries left.
+ WARN  GET https://registry.npmjs.org/@radix-ui%2Freact-toggle error (ERR_INVALID_THIS). Will retry in 10 seconds. 2 retries left.
+ WARN  GET https://registry.npmjs.org/@radix-ui%2Freact-toggle-group error (ERR_INVALID_THIS). Will retry in 10 seconds. 2 retries left.
+ WARN  GET https://registry.npmjs.org/@radix-ui%2Freact-tooltip error (ERR_INVALID_THIS). Will retry in 10 seconds. 2 retries left.
+Error: Command "pnpm install --no-frozen-lockfile" exited with 1
